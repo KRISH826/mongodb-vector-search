@@ -1,0 +1,16 @@
+langchain
+pymongo
+langchain-openai
+langchain-deepseek
+langchain-groq
+python-dotenv
+langchain-google-genai
+langgraph
+langsmith
+langchain_community
+langchain-text-splitters
+langchain-core
+pypdf
+pymupdf
+tqdm
+sentence-transformers
