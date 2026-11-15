@@ -1,8 +1,14 @@
 from .llm import get_llm
-from ..vectorstore import search
+from ..vectorstore import hybrid_search
 
-def answer(question: str, k: int = 5):
-    chunks = search(question, k)
+def answer(
+    question: str,
+    k: int = 5,
+    model:str = 'deepseek-v4-pro',
+    temperature: float = 0.0,
+    max_tokens: int = 2048,
+):
+    chunks = hybrid_search(question, k)
 
     context = "\n\n".join(
         f"[{c['source_file']}, page {c['page']}]\n{c['text']}" for c in chunks
@@ -15,5 +21,13 @@ def answer(question: str, k: int = 5):
 
     Question: {question}"""
 
-    response = get_llm().invoke(prompt)
-    return response.content, chunks
+    response = get_llm(model, temperature, max_tokens).invoke(prompt)
+    reply = response.text.strip()
+    if not reply:
+        finish_reason = response.response_metadata.get("finish_reason", "unknown")
+        raise RuntimeError(
+            "The model returned no visible answer "
+            f"(finish reason: {finish_reason}). Increase the maximum answer length."
+        )
+
+    return reply, chunks

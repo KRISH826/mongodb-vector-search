@@ -4,9 +4,10 @@ from ..config import settings
 
 
 @lru_cache
-def get_llm():
+def get_llm(model, temperature: float = 0.0, max_tokens: int = 2048):
     return ChatDeepSeek(
-        model= 'deepseek-v4-pro',
-        temperature= 0,
-        api_key= settings.deepseek_api_key # type: ignore
+        model=model,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        api_key=settings.deepseek_api_key,  # type: ignore
     )

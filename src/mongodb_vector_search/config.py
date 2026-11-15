@@ -16,6 +16,7 @@ class Settings:
     embedding_dim = 384
     db_name = "vector-search"
     collection_name = "documents"
-
+    available_models = ["deepseek-v4-pro", "deepseek-v4.1-flash", "deepseek-v4-flash"]
+    default_model = "deepseek-v4-pro"
 
 settings = Settings()

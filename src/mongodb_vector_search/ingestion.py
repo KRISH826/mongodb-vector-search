@@ -31,6 +31,14 @@ def ingest (folder:str):
     docs = load_pdfs(folder)
     chunks = split_docs(docs)
 
+     # ===== YAHAN ADD KARO =====
+    for c in chunks:
+        name = c.metadata["source_file"].removesuffix(".pdf")
+        page = c.metadata.get("page", 0) + 1
+        c.page_content = f"[{name} | page {page}]\n{c.page_content}"
+    # ==========================
+
+
     texts = [c.page_content for c in chunks]
     vectors = embed_batch(texts)
 
