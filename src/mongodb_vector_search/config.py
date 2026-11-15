@@ -14,6 +14,8 @@ class Settings:
     deepseek_api_key = _require("DEEPSEEK_API_KEY")
     embedding_model = "all-MiniLM-L6-v2"
     embedding_dim = 384
+    db_name = "vector_search_db"
+    collection_name = "documents"
 
 
 settings = Settings()
