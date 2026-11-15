@@ -27,7 +27,7 @@ with st.sidebar:
     max_tokens = st.slider(
         "Maximum answer length",
         min_value=512,
-        max_value=4_096,
+        max_value=10_000,
         value=2_048,
         step=256,
         help="Includes the model's reasoning and visible reply. Use 2,048 or more for analytical questions.",

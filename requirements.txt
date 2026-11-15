@@ -14,3 +14,4 @@ pypdf
 pymupdf
 tqdm
 sentence-transformers
+pdfplumber
