@@ -44,7 +44,7 @@ with st.sidebar:
     st.caption(f"Model: `{model}`")
     st.caption("Answers are based only on retrieved PDF content.")
 
-st.title("🔍 Ask your PDFs")
+st.title("Banking Documents")
 st.caption("Ask a question about the documents you have indexed in MongoDB.")
 
 with st.form("question_form"):

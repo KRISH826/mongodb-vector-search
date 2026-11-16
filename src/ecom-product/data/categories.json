@@ -1,0 +1,307 @@
+[
+  {
+    "_id": "cat_jewellery",
+    "name": "Jewellery",
+    "slug": "jewellery",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Jewellery"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_fashion",
+    "name": "Fashion & Accessories",
+    "slug": "fashion",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Fashion & Accessories"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_beauty",
+    "name": "Beauty & Wellness",
+    "slug": "beauty",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Beauty & Wellness"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_home",
+    "name": "Home & Living",
+    "slug": "home",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Home & Living"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_electronics",
+    "name": "Electronics & Gadgets",
+    "slug": "electronics",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Electronics & Gadgets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_food",
+    "name": "Food & Sweets",
+    "slug": "food",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Food & Sweets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_personalised",
+    "name": "Personalised & Stationery",
+    "slug": "personalised",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Personalised & Stationery"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_necklaces-pendants",
+    "name": "Necklaces & Pendants",
+    "slug": "necklaces-pendants",
+    "parent_id": "cat_jewellery",
+    "level": 2,
+    "path": [
+      "Jewellery",
+      "Necklaces & Pendants"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_earrings",
+    "name": "Earrings",
+    "slug": "earrings",
+    "parent_id": "cat_jewellery",
+    "level": 2,
+    "path": [
+      "Jewellery",
+      "Earrings"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_bracelets-bangles",
+    "name": "Bracelets & Bangles",
+    "slug": "bracelets-bangles",
+    "parent_id": "cat_jewellery",
+    "level": 2,
+    "path": [
+      "Jewellery",
+      "Bracelets & Bangles"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_handbags-clutches",
+    "name": "Handbags & Clutches",
+    "slug": "handbags-clutches",
+    "parent_id": "cat_fashion",
+    "level": 2,
+    "path": [
+      "Fashion & Accessories",
+      "Handbags & Clutches"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_watches",
+    "name": "Watches",
+    "slug": "watches",
+    "parent_id": "cat_fashion",
+    "level": 2,
+    "path": [
+      "Fashion & Accessories",
+      "Watches"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_scarves-stoles",
+    "name": "Scarves & Stoles",
+    "slug": "scarves-stoles",
+    "parent_id": "cat_fashion",
+    "level": 2,
+    "path": [
+      "Fashion & Accessories",
+      "Scarves & Stoles"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_skincare-sets",
+    "name": "Skincare Sets",
+    "slug": "skincare-sets",
+    "parent_id": "cat_beauty",
+    "level": 2,
+    "path": [
+      "Beauty & Wellness",
+      "Skincare Sets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_perfumes-fragrances",
+    "name": "Perfumes & Fragrances",
+    "slug": "perfumes-fragrances",
+    "parent_id": "cat_beauty",
+    "level": 2,
+    "path": [
+      "Beauty & Wellness",
+      "Perfumes & Fragrances"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_makeup",
+    "name": "Makeup",
+    "slug": "makeup",
+    "parent_id": "cat_beauty",
+    "level": 2,
+    "path": [
+      "Beauty & Wellness",
+      "Makeup"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_home-decor",
+    "name": "Home Decor",
+    "slug": "home-decor",
+    "parent_id": "cat_home",
+    "level": 2,
+    "path": [
+      "Home & Living",
+      "Home Decor"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_candles-aroma",
+    "name": "Candles & Aroma",
+    "slug": "candles-aroma",
+    "parent_id": "cat_home",
+    "level": 2,
+    "path": [
+      "Home & Living",
+      "Candles & Aroma"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_earbuds-headphones",
+    "name": "Earbuds & Headphones",
+    "slug": "earbuds-headphones",
+    "parent_id": "cat_electronics",
+    "level": 2,
+    "path": [
+      "Electronics & Gadgets",
+      "Earbuds & Headphones"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_smart-gadgets",
+    "name": "Smart Gadgets",
+    "slug": "smart-gadgets",
+    "parent_id": "cat_electronics",
+    "level": 2,
+    "path": [
+      "Electronics & Gadgets",
+      "Smart Gadgets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_chocolates-sweets",
+    "name": "Chocolates & Sweets",
+    "slug": "chocolates-sweets",
+    "parent_id": "cat_food",
+    "level": 2,
+    "path": [
+      "Food & Sweets",
+      "Chocolates & Sweets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_dry-fruits-hampers",
+    "name": "Dry Fruits & Hampers",
+    "slug": "dry-fruits-hampers",
+    "parent_id": "cat_food",
+    "level": 2,
+    "path": [
+      "Food & Sweets",
+      "Dry Fruits & Hampers"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_personalised-gifts",
+    "name": "Personalised Gifts",
+    "slug": "personalised-gifts",
+    "parent_id": "cat_personalised",
+    "level": 2,
+    "path": [
+      "Personalised & Stationery",
+      "Personalised Gifts"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_books-stationery",
+    "name": "Books & Stationery",
+    "slug": "books-stationery",
+    "parent_id": "cat_personalised",
+    "level": 2,
+    "path": [
+      "Personalised & Stationery",
+      "Books & Stationery"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  }
+]
