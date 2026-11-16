@@ -31,14 +31,37 @@ def build_semantic_text(
     return " ".join(p for p in parts if p)
 
 
-def enrich_exist_product():
+def enrich_exist_product(batch_size: int = 200):
     db = get_db()
 
-    category_map = {c["_id"]: c.get("name", "") for c in db["categories"].find()}
-    brand_map = {b["_id"]: b.get("name", "") for b in db["brands"].find()}
+    category_map = {
+        c["_id"]: c.get("name", "") 
+        for c in db["categories"].find({}, {"_id": 1, "name": 1})
+    }
+    brand_map = {
+        b["_id"]: b.get("name", "") 
+        for b in db["brands"].find({}, {"_id": 1, "name": 1})
+    }
 
+
+    # Projection: Sirf zaroori fields hi MongoDB se mangwayein
+    projection = {
+        "_id": 1,
+        "title": 1,
+        "name": 1,
+        "category_id": 1,
+        "brand_id": 1,
+        "price": 1,
+        "description": 1,
+        "tags": 1,
+        "specs": 1,
+    }
+
+    cursor = db["products"].find({}, projection).batch_size(batch_size)
     ops = []
-    for p in db["products"].find():
+    total_processed = 0
+    total_modified = 0
+    for p in cursor:
         semantic_text = build_semantic_text(p, category_map, brand_map)
         ops.append(
             UpdateOne(
@@ -47,12 +70,23 @@ def enrich_exist_product():
             )
         )
 
+    if len(ops) >= batch_size:
+        result = db["products"].bulk_write(ops, ordered= False)
+        total_processed += len(ops)
+        total_modified += result.modified_count
+        ops.clear()  # Memory free karne ke liye zaroori hai
+        print(f"Processed: {total_processed} | Modified: {total_modified}")
+
+
     if ops:
-        results = db["products"].bulk_write(ops)
-        print(f"Updated {results.modified_count} products with semantic_text!")
+        results = db["products"].bulk_write(ops, ordered=False)
+        total_processed += len(ops)
+        total_modified += results.modified_count
+        ops.clear()
     else:
         print("No products found in database.")
 
+    print(f"Completed! Total Processed: {total_processed}, Total Modified: {total_modified}")
 
 if __name__ == "__main__":
     enrich_exist_product()
