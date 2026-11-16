@@ -1,0 +1,22 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def _require(env: str) -> str:
+    value = os.getenv(env)
+    if not value:
+        raise ValueError(f"{env} is missing from your .env file!")
+    return value
+
+class Settings:
+    mongodb_uri = _require("MONGO_DB_URL")
+    deepseek_api_key = _require("DEEPSEEK_API_KEY")
+    embedding_model = "all-MiniLM-L6-v2"
+    embedding_dim = 384
+    db_name = "vector-search"
+    collection_name = "documents"
+    available_models = ["deepseek-v4-pro", "deepseek-v4.1-flash", "deepseek-v4-flash"]
+    default_model = "deepseek-v4-pro"
+
+settings = Settings()
