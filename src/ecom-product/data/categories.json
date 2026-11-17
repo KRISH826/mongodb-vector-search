@@ -1,0 +1,500 @@
+[
+  {
+    "_id": "cat_mobiles-tablets",
+    "name": "Mobiles & Tablets",
+    "slug": "mobiles-tablets",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Mobiles & Tablets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_smartphones",
+    "name": "Smartphones",
+    "slug": "smartphones",
+    "parent_id": "cat_mobiles-tablets",
+    "level": 2,
+    "path": [
+      "Mobiles & Tablets",
+      "Smartphones"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_tablets",
+    "name": "Tablets",
+    "slug": "tablets",
+    "parent_id": "cat_mobiles-tablets",
+    "level": 2,
+    "path": [
+      "Mobiles & Tablets",
+      "Tablets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_mobile-accessories",
+    "name": "Mobile Accessories",
+    "slug": "mobile-accessories",
+    "parent_id": "cat_mobiles-tablets",
+    "level": 2,
+    "path": [
+      "Mobiles & Tablets",
+      "Mobile Accessories"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_electronics-computers",
+    "name": "Electronics & Computers",
+    "slug": "electronics-computers",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Electronics & Computers"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_laptops",
+    "name": "Laptops",
+    "slug": "laptops",
+    "parent_id": "cat_electronics-computers",
+    "level": 2,
+    "path": [
+      "Electronics & Computers",
+      "Laptops"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_audio-headphones",
+    "name": "Audio & Headphones",
+    "slug": "audio-headphones",
+    "parent_id": "cat_electronics-computers",
+    "level": 2,
+    "path": [
+      "Electronics & Computers",
+      "Audio & Headphones"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_smartwatches-wearables",
+    "name": "Smartwatches & Wearables",
+    "slug": "smartwatches-wearables",
+    "parent_id": "cat_electronics-computers",
+    "level": 2,
+    "path": [
+      "Electronics & Computers",
+      "Smartwatches & Wearables"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_cameras-accessories",
+    "name": "Cameras & Accessories",
+    "slug": "cameras-accessories",
+    "parent_id": "cat_electronics-computers",
+    "level": 2,
+    "path": [
+      "Electronics & Computers",
+      "Cameras & Accessories"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_appliances",
+    "name": "TVs & Home Appliances",
+    "slug": "tvs-home-appliances",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "TVs & Home Appliances"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_smart-tvs",
+    "name": "Smart TVs",
+    "slug": "smart-tvs",
+    "parent_id": "cat_appliances",
+    "level": 2,
+    "path": [
+      "TVs & Home Appliances",
+      "Smart TVs"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_kitchen-appliances",
+    "name": "Kitchen Appliances",
+    "slug": "kitchen-appliances",
+    "parent_id": "cat_appliances",
+    "level": 2,
+    "path": [
+      "TVs & Home Appliances",
+      "Kitchen Appliances"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_air-conditioners-coolers",
+    "name": "Air Conditioners & Coolers",
+    "slug": "air-conditioners-coolers",
+    "parent_id": "cat_appliances",
+    "level": 2,
+    "path": [
+      "TVs & Home Appliances",
+      "Air Conditioners & Coolers"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_mens-fashion",
+    "name": "Men's Clothing & Footwear",
+    "slug": "mens-clothing-footwear",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Men's Clothing & Footwear"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_mens-tshirts-shirts",
+    "name": "Men's T-Shirts & Shirts",
+    "slug": "mens-tshirts-shirts",
+    "parent_id": "cat_mens-fashion",
+    "level": 2,
+    "path": [
+      "Men's Clothing & Footwear",
+      "Men's T-Shirts & Shirts"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_mens-jeans-trousers",
+    "name": "Men's Jeans & Trousers",
+    "slug": "mens-jeans-trousers",
+    "parent_id": "cat_mens-fashion",
+    "level": 2,
+    "path": [
+      "Men's Clothing & Footwear",
+      "Men's Jeans & Trousers"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_mens-ethnic-wear",
+    "name": "Men's Ethnic Wear",
+    "slug": "mens-ethnic-wear",
+    "parent_id": "cat_mens-fashion",
+    "level": 2,
+    "path": [
+      "Men's Clothing & Footwear",
+      "Men's Ethnic Wear"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_mens-footwear",
+    "name": "Men's Footwear",
+    "slug": "mens-footwear",
+    "parent_id": "cat_mens-fashion",
+    "level": 2,
+    "path": [
+      "Men's Clothing & Footwear",
+      "Men's Footwear"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_womens-fashion",
+    "name": "Women's Clothing & Footwear",
+    "slug": "womens-clothing-footwear",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Women's Clothing & Footwear"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_sarees-kurtas",
+    "name": "Sarees, Kurtas & Ethnic",
+    "slug": "sarees-kurtas-ethnic",
+    "parent_id": "cat_womens-fashion",
+    "level": 2,
+    "path": [
+      "Women's Clothing & Footwear",
+      "Sarees, Kurtas & Ethnic"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_womens-western-wear",
+    "name": "Women's Western Wear",
+    "slug": "womens-western-wear",
+    "parent_id": "cat_womens-fashion",
+    "level": 2,
+    "path": [
+      "Women's Clothing & Footwear",
+      "Women's Western Wear"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_womens-footwear",
+    "name": "Women's Footwear",
+    "slug": "womens-footwear",
+    "parent_id": "cat_womens-fashion",
+    "level": 2,
+    "path": [
+      "Women's Clothing & Footwear",
+      "Women's Footwear"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_handbags-wallets",
+    "name": "Handbags & Wallets",
+    "slug": "handbags-wallets",
+    "parent_id": "cat_womens-fashion",
+    "level": 2,
+    "path": [
+      "Women's Clothing & Footwear",
+      "Handbags & Wallets"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_jewellery-watches",
+    "name": "Jewellery & Watches",
+    "slug": "jewellery-watches",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Jewellery & Watches"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_gold-diamond-jewellery",
+    "name": "Gold & Diamond Jewellery",
+    "slug": "gold-diamond-jewellery",
+    "parent_id": "cat_jewellery-watches",
+    "level": 2,
+    "path": [
+      "Jewellery & Watches",
+      "Gold & Diamond Jewellery"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_silver-fashion-jewellery",
+    "name": "Silver & Fashion Jewellery",
+    "slug": "silver-fashion-jewellery",
+    "parent_id": "cat_jewellery-watches",
+    "level": 2,
+    "path": [
+      "Jewellery & Watches",
+      "Silver & Fashion Jewellery"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_analog-chronograph-watches",
+    "name": "Analog & Chronograph Watches",
+    "slug": "analog-chronograph-watches",
+    "parent_id": "cat_jewellery-watches",
+    "level": 2,
+    "path": [
+      "Jewellery & Watches",
+      "Analog & Chronograph Watches"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_beauty-personal-care",
+    "name": "Beauty, Grooming & Health",
+    "slug": "beauty-grooming-health",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Beauty, Grooming & Health"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_skincare-haircare",
+    "name": "Skincare & Haircare",
+    "slug": "skincare-haircare",
+    "parent_id": "cat_beauty-personal-care",
+    "level": 2,
+    "path": [
+      "Beauty, Grooming & Health",
+      "Skincare & Haircare"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_makeup-fragrances",
+    "name": "Makeup & Fragrances",
+    "slug": "makeup-fragrances",
+    "parent_id": "cat_beauty-personal-care",
+    "level": 2,
+    "path": [
+      "Beauty, Grooming & Health",
+      "Makeup & Fragrances"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_mens-grooming",
+    "name": "Men's Grooming",
+    "slug": "mens-grooming",
+    "parent_id": "cat_beauty-personal-care",
+    "level": 2,
+    "path": [
+      "Beauty, Grooming & Health",
+      "Men's Grooming"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_home-kitchen",
+    "name": "Home, Kitchen & Furniture",
+    "slug": "home-kitchen-furniture",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Home, Kitchen & Furniture"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_cookware-dining",
+    "name": "Cookware & Dining",
+    "slug": "cookware-dining",
+    "parent_id": "cat_home-kitchen",
+    "level": 2,
+    "path": [
+      "Home, Kitchen & Furniture",
+      "Cookware & Dining"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_home-furnishing-decor",
+    "name": "Home Furnishing & Decor",
+    "slug": "home-furnishing-decor",
+    "parent_id": "cat_home-kitchen",
+    "level": 2,
+    "path": [
+      "Home, Kitchen & Furniture",
+      "Home Furnishing & Decor"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_furniture",
+    "name": "Furniture",
+    "slug": "furniture",
+    "parent_id": "cat_home-kitchen",
+    "level": 2,
+    "path": [
+      "Home, Kitchen & Furniture",
+      "Furniture"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_sports-books-toys",
+    "name": "Sports, Books & Toys",
+    "slug": "sports-books-toys",
+    "parent_id": null,
+    "level": 1,
+    "path": [
+      "Sports, Books & Toys"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_fitness-sports",
+    "name": "Fitness & Sports",
+    "slug": "fitness-sports",
+    "parent_id": "cat_sports-books-toys",
+    "level": 2,
+    "path": [
+      "Sports, Books & Toys",
+      "Fitness & Sports"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_books-stationery",
+    "name": "Books & Stationery",
+    "slug": "books-stationery",
+    "parent_id": "cat_sports-books-toys",
+    "level": 2,
+    "path": [
+      "Sports, Books & Toys",
+      "Books & Stationery"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  },
+  {
+    "_id": "cat_toys-baby-care",
+    "name": "Toys & Baby Care",
+    "slug": "toys-baby-care",
+    "parent_id": "cat_sports-books-toys",
+    "level": 2,
+    "path": [
+      "Sports, Books & Toys",
+      "Toys & Baby Care"
+    ],
+    "is_active": true,
+    "created_at": "2026-11-01T00:00:00Z"
+  }
+]
