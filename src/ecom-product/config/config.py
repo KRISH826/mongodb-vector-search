@@ -16,6 +16,7 @@ class Settings:
     db_name = "ecommerce"
     embedding_model = "all-MiniLM-L6-v2"
     embedding_dim = 384
+    vector_index_name = "product_vector_index"
 
 
 settings = Settings()
