@@ -65,7 +65,7 @@ def generate_embeddings():
                 {"_id": doc["_id"]},
                 {"$set": {"embedding": vec.tolist()}},
             )
-            for doc, vec in vectors
+            for doc, vec in zip(batch, vectors)
         ]
 
         if ops:
