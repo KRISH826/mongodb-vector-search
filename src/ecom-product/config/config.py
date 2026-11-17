@@ -14,6 +14,8 @@ def require(name: str) -> str:
 class Settings:
     mongodb_uri = require("MONGO_DB_URL")
     db_name = "ecommerce"
+    embedding_model = "all-MiniLM-L6-v2"
+    embedding_dim = 384
 
 
 settings = Settings()
