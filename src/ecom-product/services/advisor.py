@@ -41,4 +41,5 @@ def ai_advisor(user_query: str, products: list[dict[str, Any]]) -> str:
         return str(response.content)
     except Exception as e:
         print(f"[Warning] Advisor LLM fallback triggered: {e}")
+        top_names = ", ".join(p.get("name", "Product") for p in products[:3])
         return f"Top recommendations: {top_names}."
