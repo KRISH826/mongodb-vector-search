@@ -17,6 +17,8 @@ class Settings:
     embedding_model = "all-MiniLM-L6-v2"
     embedding_dim = 384
     vector_index_name = "product_vector_index"
+    groq_api_model = "openai/gpt-oss-120b"
+    groq_api_key = require("GROQ_API_KEY")
 
 
 settings = Settings()
