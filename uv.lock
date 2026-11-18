@@ -1667,6 +1667,7 @@ dependencies = [
     { name = "speechrecognition" },
     { name = "streamlit" },
     { name = "tqdm" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -1699,6 +1700,7 @@ requires-dist = [
     { name = "speechrecognition", specifier = ">=3.17.0" },
     { name = "streamlit", specifier = ">=1.67.0" },
     { name = "tqdm", specifier = ">=4.70.1" },
+    { name = "uvicorn", specifier = ">=0.54.0" },
 ]
 
 [[package]]
