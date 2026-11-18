@@ -13,4 +13,4 @@ def health_check() -> dict[str,str]:
 
 @router.post("/recommended", response_model= RecommendResponse)
 def ai_recommended_product(payload: RecommendedRequest) -> RecommendResponse:
-    return handle_product_recommandations(payload)
+    return handle_product_recommandations(payload)    
