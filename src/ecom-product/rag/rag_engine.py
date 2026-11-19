@@ -1,6 +1,6 @@
 import os
 from langchain_groq import ChatGroq
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Any
 from sentence_transformers import SentenceTransformer
 
@@ -35,6 +35,29 @@ class SearchInput(BaseModel):
         description="Occasion in lowercase if mentioned (e.g., 'bhaidooj', 'diwali', 'birthday'), else None",
     )
 
+    style: str | None = Field(
+        default=None,
+        description="Product style in lowercase if mentioned (e.g., 'casual', 'formal', 'ethnic-casual', 'premium'), else None",
+    )
+    season: str | None = Field(
+        default=None,
+        description="Season in lowercase if mentioned (e.g., 'summer', 'winter', 'all-season'), else None",
+    )
+    vibe_keywords: list[str] = Field(
+        default_factory=list,
+        description="2-4 lowercase vibe or feature keywords (e.g., ['gaming', '5g', 'camera-phone']), else []",
+    )
+
+    @field_validator("vibe_keywords", mode="before")
+    @classmethod
+    def clean_vibe_keywords(cls, v: Any) -> list[str]:
+        if isinstance(v, str):
+            v = v.split(",")
+        if not isinstance(v, list):
+            return []
+        return [str(item).strip().lower() for item in v if str(item).strip()]
+    gender = None
+
 
 def extract_intent(user_query:str) -> SearchInput:
     """
@@ -51,22 +74,55 @@ def extract_intent(user_query:str) -> SearchInput:
             )
             structured_llm = llm.with_structured_output(SearchInput, method="json_mode")
             prompt = (
-                "Extract e-commerce search parameters from the user's query. "
-                "Keep 'semantic_query' rich in product attributes and use-cases. "
-                "Normalize 'gift_for' and 'occasion' to lowercase single words if present (e.g., 'sister', 'bhaidooj').\n\n"
+                "Extract e-commerce search parameters from the user's query (English, Hindi, or Hinglish) "
+                "and respond ONLY with a valid JSON object matching this exact schema:\n"
+                "{\n"
+                '  "semantic_query": string,\n'
+                '  "max_price": number or null,\n'
+                '  "gender": "male" | "female" | "unisex" or null,\n'
+                '  "gift_for": string or null,\n'
+                '  "occasion": string or null,\n'
+                '  "style": string or null,\n'
+                '  "season": string or null,\n'
+                '  "vibe_keywords": [string]\n'
+                "}\n\n"
+                "Rules:\n"
+                "- Keep 'semantic_query' in rich English product attributes and use-cases.\n"
+                "- Infer 'gender' strictly when recipient/user gender is clear "
+                "(wife, girlfriend, mother, sister, behen, women -> 'female'; "
+                "husband, boyfriend, father, brother, bhai, men -> 'male'). Otherwise null.\n"
+                "- Normalize 'gift_for', 'occasion', 'style', 'season' to lowercase single words if present.\n"
+                "- Extract 2-4 lowercase feature/vibe words in 'vibe_keywords' if applicable.\n\n"
                 f"User Query: {user_query}"
             )
 
-            return SearchInput.model_validate(structured_llm.invoke(prompt))
+            raw_output = SearchInput.model_validate(structured_llm.invoke(prompt))
+            return (
+                raw_output
+                if isinstance(raw_output, SearchInput)
+                else SearchInput.model_validate(raw_output)
+            )
         except Exception as e:
             print(f"[Warning] Groq intent extraction fallback triggered: {e}")
 
     return SearchInput(semantic_query=user_query)
 
-def build_pre_filter(intent: SearchInput) -> dict[str, Any]:
+def _gender_variants(gender: str) -> list[str]:
+    """Gender ke saath unisex allow karta hai + DB ki mixed casing handle karta hai."""
+    if gender == "female":
+        return ["female", "unisex", "FEMALE", "UNISEX", "Female", "Unisex"]
+    if gender == "male":
+        return ["male", "unisex", "MALE", "UNISEX", "Male", "Unisex"]
+    return ["unisex", "UNISEX", "Unisex"]
+
+def _case_variants(value: str) -> list[str]:
+    return list({value.lower(), value.title(), value.upper()})
+
+
+def build_pre_filter(intent: SearchInput, tier: int = 1) -> dict[str, Any]:
     """MongoDB Atlas $vectorSearch ke liye valid pre-filter dictionary banata hai."""
 
-    conditions: list[dict[str, Any]] = [
+    conditions:list[dict[str, Any]] = [
         {"is_active": {"$eq": True}},
         {"stock": {"$gt": 0}},
     ]
@@ -74,12 +130,16 @@ def build_pre_filter(intent: SearchInput) -> dict[str, Any]:
     if intent.max_price is not None:
         conditions.append({"price.selling_price": {"$lte": intent.max_price}})
 
-    if intent.gift_for:
-        conditions.append({"gift_for": {"$in": [intent.gift_for.lower()]}})
+    if tier in (1, 2) and intent.gender:
+        conditions.append({"intent.gender": {"$in": _gender_variants(intent.gender)}})
 
-    if intent.occasion:
-        conditions.append({"occasions": {"$in": [intent.occasion.lower()]}})
+    if tier == 1:
+        if intent.gift_for:
+            conditions.append({"gift_for": {"$in": _case_variants(intent.gift_for)}})
+        if intent.occasion:
+            conditions.append({"occasions": {"$in": _case_variants(intent.occasion)}})
 
+    
     return {"$and": conditions} if len(conditions) > 1 else conditions[0]    
 
 

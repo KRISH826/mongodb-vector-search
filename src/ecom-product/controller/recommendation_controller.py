@@ -1,11 +1,11 @@
 from fastapi import HTTPException
 import time
-from ..models.recommendation import ProductItem, RecommendedRequest, RecommendResponse
+from ..models.recommendation import ProductItem, RecommendResponse, RecommendRequest
 from ..rag.rag_engine import hybrid_product_search
 from ..services.advisor import ai_advisor
 
 
-def handle_product_recommandations(payload: RecommendedRequest) -> RecommendResponse:
+def handle_product_recommandations(payload: RecommendRequest) -> RecommendResponse:
     """Request leta hai, hybrid search + AI advisor chalata hai, aur clean response banata hai."""
     start = time.perf_counter()
 
@@ -22,13 +22,16 @@ def handle_product_recommandations(payload: RecommendedRequest) -> RecommendResp
 
     formatted_products = [
         ProductItem(
-            id= str(p["_id"]),
+            id=str(p["_id"]),
             name=p.get("name", "Unknown Product"),
-            brand_name=p.get("brand_name", ""),
-            selling_price=p.get("price", {}).get("selling_price"),
-            mrp=p.get("price", {}).get("mrp"),
+            selling_price=(p.get("price") or {}).get("selling_price"),
+            mrp=(p.get("price") or {}).get("mrp"),
+            gender=(p.get("intent") or {}).get("gender"),
+            style=(p.get("intent") or {}).get("style"),
+            vibe_keywords=(p.get("intent") or {}).get("vibe_keywords", []),
             gift_for=p.get("gift_for", []),
             occasions=p.get("occasions", []),
+            rating=(p.get("rating") or {}).get("average"),
             score=round(float(p.get("score", 0.0)), 4),
         )
 
@@ -46,7 +49,7 @@ def handle_product_recommandations(payload: RecommendedRequest) -> RecommendResp
         query = payload.query,
         extracted_intent=search_result["extracted_intent"],
         ai_recommendation=ai_summary,
-        total_data = len(formatted_products),
+        total_found = len(formatted_products),
         latency_ms= elapsed_ms,
         products= formatted_products
     )

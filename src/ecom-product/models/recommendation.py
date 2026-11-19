@@ -1,33 +1,37 @@
 from typing import Any
 from pydantic import BaseModel, Field
 
-class RecommendedRequest(BaseModel):
+from typing import Any
+from pydantic import BaseModel, Field
+
+
+class RecommendRequest(BaseModel):
     query: str = Field(
         ...,
-        min_length= 2,
-        max_length= 300,
-        examples=["bhai gaming ke liye ek tagda phone suggest kar 30000 tak"],
+        min_length=2,
+        max_length=300,
+        examples=["meri wife ke liye birthday gift suggest kar 5000 tak"],
     )
-
-    limit: int = Field(default= 5 , ge = 1, le = 20)
-    include_ai_summary: bool = Field(default= True)
-
+    limit: int = Field(default=5, ge=1, le=20)
+    include_ai_summary: bool = Field(default=True)
 
 class ProductItem(BaseModel):
     id: str
     name: str
-    brand_name: str
     selling_price: float | int | None = None
     mrp: float | int | None = None
-    gift_for: list[str] = []
-    occasions: list[str] = []
+    gender: str | None = None
+    style: str | None = None
+    vibe_keywords: list[str] = Field(default_factory=list)
+    gift_for: list[str] = Field(default_factory=list)
+    occasions: list[str] = Field(default_factory=list)
+    rating: float | None = None
     score: float
-
 
 class RecommendResponse(BaseModel):
     query: str
     extracted_intent: dict[str, Any]
     ai_recommendation: str | None = None
-    total_data: int
+    total_found: int
     latency_ms: float
     products: list[ProductItem]
