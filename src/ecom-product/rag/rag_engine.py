@@ -45,11 +45,11 @@ def extract_intent(user_query:str) -> SearchInput:
     if groq_key:
         try: 
             llm = ChatGroq(
-                model="llama-3.3-70b-versatile",
+                model="openai/gpt-oss-120b",
                 temperature=0,
                 max_retries=2,
             )
-            structured_llm = llm.with_structured_output(SearchInput)
+            structured_llm = llm.with_structured_output(SearchInput, method="json_mode")
             prompt = (
                 "Extract e-commerce search parameters from the user's query. "
                 "Keep 'semantic_query' rich in product attributes and use-cases. "
@@ -78,8 +78,83 @@ def build_pre_filter(intent: SearchInput) -> dict[str, Any]:
         conditions.append({"gift_for": {"$in": [intent.gift_for.lower()]}})
 
     if intent.occasion:
-        conditions.append({"occasion": {"$in": [intent.occasion.lower()]}})
+        conditions.append({"occasions": {"$in": [intent.occasion.lower()]}})
 
     return {"$and": conditions} if len(conditions) > 1 else conditions[0]    
 
-   
+
+def hybrid_product_search(user_query: str, limit: int = 5) -> dict[str, Any]:
+    """
+    Complete Hybrid Search Pipeline:
+    1. Intent Extraction -> 2. Query Embedding -> 3. Atlas $vectorSearch -> 4. Clean Results
+    """
+
+    db = get_db()
+    model = get_model()
+
+    intent = extract_intent(user_query)
+
+    query_vector = model.encode(
+        intent.semantic_query, normalize_embeddings= True
+    ).tolist()
+
+    pre_filter = build_pre_filter(intent)
+
+    pipeline = [
+        {
+            "$vectorSearch": {
+                "index": settings.vector_index_name,
+                "path": "embedding",
+                "queryVector": query_vector,
+                "numCandidates": limit * 20,  # HNSW graph mein 100 candidates scan honge
+                "limit": limit,
+                "filter": pre_filter,
+            }
+        },
+
+        {
+            "$project": {
+                "_id": 1,
+                "name": 1,
+                "price": 1,
+                "gift_for": 1,
+                "occasions": 1,
+                "rating": 1,
+                "search_text": 1,
+                "score": {"$meta": "vectorSearchScore"},
+            }
+        }
+    ]
+
+    results = list(db["products"].aggregate(pipeline))
+
+    # Fallback: Agar strict gift_for/occasion filter se 0 results aayein, toh sirf price + stock filter par pure semantic search chalao
+    if not results and (intent.gift_for or intent.occasion):
+        fallback_conditions: list[dict[str, Any]] = [
+            {"is_active": {"$eq": True}},
+            {"stock": {"$gt": 0}},
+        ]
+        if intent.max_price is not None:
+            fallback_conditions.append({"price.selling_price": {"$lte": intent.max_price}})
+
+        pipeline[0]["$vectorSearch"]["filter"] = {"$and": fallback_conditions}
+        results = list(db["products"].aggregate(pipeline))
+
+    return {
+        "user_query": user_query,
+        "extracted_intent": intent.model_dump(),
+        "total_found": len(results),
+        "products": results,
+    }
+
+if __name__ == "__main__":
+    test_queries = [
+        "behen ke liye bhaidooj pe badhiya gift dikhao 5000 ke andar",
+        "bhai gaming ke liye ek tagda phone suggest kar 30000 tak",
+    ]
+
+    for q in test_queries:
+        print(f"QUERY: {q}")
+        response = hybrid_product_search(q, limit=3)
+        print(response)
+
