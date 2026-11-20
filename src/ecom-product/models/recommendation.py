@@ -12,7 +12,7 @@ class RecommendRequest(BaseModel):
         max_length=300,
         examples=["meri wife ke liye birthday gift suggest kar 5000 tak"],
     )
-    limit: int = Field(default=5, ge=1, le=20)
+    limit: int = Field(default=5, ge=1, le=50)
     include_ai_summary: bool = Field(default=True)
 
 class ProductItem(BaseModel):

@@ -1,7 +1,7 @@
 import os
 from langchain_groq import ChatGroq
 from pydantic import BaseModel, Field, field_validator
-from typing import Any
+from typing import Any, Literal
 from sentence_transformers import SentenceTransformer
 
 from ..config.config import settings
@@ -21,10 +21,14 @@ class SearchInput(BaseModel):
         ...,
         description="Clean product search intent (e.g., 'high performance gaming smartphone' or 'thoughtful gift for sister')",
     )
-
+    
     max_price: float | None = Field(
         default=None,
         description="Maximum budget in INR if mentioned by user, else None",
+    )
+    gender: Literal["male", "female", "unisex"] | None = Field(
+        default=None,
+        description="Target gender inferred from query (e.g., wife/sister -> 'female', husband/brother -> 'male'), else None",
     )
     gift_for: str | None = Field(
         default=None,
@@ -153,6 +157,13 @@ def hybrid_product_search(user_query: str, limit: int = 5) -> dict[str, Any]:
     model = get_model()
 
     intent = extract_intent(user_query)
+    query_parts = [intent.semantic_query]
+    if intent.style:
+        query_parts.append(f"style: {intent.style}")
+    if intent.season:
+        query_parts.append(f"season: {intent.season}")
+    if intent.vibe_keywords:
+        query_parts.append("vibe: " + ", ".join(intent.vibe_keywords))   
 
     query_vector = model.encode(
         intent.semantic_query, normalize_embeddings= True
@@ -166,8 +177,8 @@ def hybrid_product_search(user_query: str, limit: int = 5) -> dict[str, Any]:
                 "index": settings.vector_index_name,
                 "path": "embedding",
                 "queryVector": query_vector,
-                "numCandidates": limit * 20,  # HNSW graph mein 100 candidates scan honge
-                "limit": limit,
+                "numCandidates": int(max(limit * 20, 100)),
+                "limit": int(limit),
                 "filter": pre_filter,
             }
         },
@@ -181,6 +192,8 @@ def hybrid_product_search(user_query: str, limit: int = 5) -> dict[str, Any]:
                 "occasions": 1,
                 "rating": 1,
                 "search_text": 1,
+                "semantic_text": 1,
+                "intent": 1,
                 "score": {"$meta": "vectorSearchScore"},
             }
         }

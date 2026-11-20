@@ -22,7 +22,7 @@ def ai_advisor(user_query: str, products: list[dict[str, Any]]) -> str:
 
         catalog_context = "\n".join(
             f"- {p.get('name')} | Price: ₹{p.get('price', {}).get('selling_price', 'N/A')} | "
-            f"Details: {p.get('search_text', '')}"
+            f"Details: {p.get('semantic_text') or p.get('search_text', '')}"  # <-- SIRF YEH LINE CHANGE KARO
             for p in products
         )
 
