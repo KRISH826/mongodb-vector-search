@@ -208,6 +208,7 @@ cython_debug/
 # .vscode/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
+artifacts/chat_search_state_graph.png
 
 # Ruff stuff:
 .ruff_cache/
