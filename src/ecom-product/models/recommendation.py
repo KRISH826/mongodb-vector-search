@@ -14,6 +14,7 @@ class RecommendRequest(BaseModel):
     )
     limit: int = Field(default=5, ge=1, le=50)
     include_ai_summary: bool = Field(default=True)
+    thread_id: str | None = Field(default=None, description="Session ID for multi-turn memory")
 
 class ProductItem(BaseModel):
     id: str

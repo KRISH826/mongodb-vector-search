@@ -1,7 +1,8 @@
 from fastapi import HTTPException
 import time
 from ..models.recommendation import ProductItem, RecommendResponse, RecommendRequest
-from ..rag.rag_engine import hybrid_product_search
+from ..rag.checkpointer import resolve_stateful_intent
+from ..rag.rag_engine import extract_intent, hybrid_product_search
 from ..services.advisor import ai_advisor
 
 
@@ -10,15 +11,17 @@ def handle_product_recommandations(payload: RecommendRequest) -> RecommendRespon
     start = time.perf_counter()
 
     try:
-        search_result = hybrid_product_search(
-            user_query= payload.query,
-            limit = payload.limit
-        )
 
+        intent = (
+            resolve_stateful_intent(payload.query, payload.thread_id)
+            if payload.thread_id
+            else extract_intent(payload.query)
+        )
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Search pipeline error: {str(e)}")
 
-    raw_products = search_result["products"]
+    raw_products = hybrid_product_search(intent, limit = payload.limit)
 
     formatted_products = [
         ProductItem(
@@ -47,7 +50,7 @@ def handle_product_recommandations(payload: RecommendRequest) -> RecommendRespon
 
     return RecommendResponse(
         query = payload.query,
-        extracted_intent=search_result["extracted_intent"],
+        extracted_intent=dict(intent),
         ai_recommendation=ai_summary,
         total_found = len(formatted_products),
         latency_ms= elapsed_ms,

@@ -1,27 +1,27 @@
 import os
+from typing import Any, Literal
 from langchain_groq import ChatGroq
 from pydantic import BaseModel, Field, field_validator
-from typing import Any, Literal
 from sentence_transformers import SentenceTransformer
-
+from pydantic import SecretStr
 from ..config.config import settings
 from ..db.db import get_db
 
 _model: SentenceTransformer | None = None
 
+
 def get_model() -> SentenceTransformer:
     global _model
     if _model is None:
         _model = SentenceTransformer(settings.embedding_model)
-
     return _model
+
 
 class SearchInput(BaseModel):
     semantic_query: str = Field(
         ...,
         description="Clean product search intent (e.g., 'high performance gaming smartphone' or 'thoughtful gift for sister')",
     )
-    
     max_price: float | None = Field(
         default=None,
         description="Maximum budget in INR if mentioned by user, else None",
@@ -38,7 +38,6 @@ class SearchInput(BaseModel):
         default=None,
         description="Occasion in lowercase if mentioned (e.g., 'bhaidooj', 'diwali', 'birthday'), else None",
     )
-
     style: str | None = Field(
         default=None,
         description="Product style in lowercase if mentioned (e.g., 'casual', 'formal', 'ethnic-casual', 'premium'), else None",
@@ -52,6 +51,13 @@ class SearchInput(BaseModel):
         description="2-4 lowercase vibe or feature keywords (e.g., ['gaming', '5g', 'camera-phone']), else []",
     )
 
+    @field_validator("gender", "gift_for", "occasion", "style", "season", mode="before")
+    @classmethod
+    def normalize_strings(cls, v: Any) -> str | None:
+        if v is None or not str(v).strip():
+            return None
+        return str(v).strip().lower()
+
     @field_validator("vibe_keywords", mode="before")
     @classmethod
     def clean_vibe_keywords(cls, v: Any) -> list[str]:
@@ -60,19 +66,15 @@ class SearchInput(BaseModel):
         if not isinstance(v, list):
             return []
         return [str(item).strip().lower() for item in v if str(item).strip()]
-    gender = None
 
 
-def extract_intent(user_query:str) -> SearchInput:
-    """
-    User ki natural query se structured filters + semantic query nikaalta hai using Groq (Llama 3.3 70B).
-    """
+def extract_intent(user_query: str) -> SearchInput:
 
-    groq_key = os.getenv("GROQ_API_KEY")
-    if groq_key:
-        try: 
+    if settings.groq_api_key:
+        try:
             llm = ChatGroq(
-                model="openai/gpt-oss-120b",
+                api_key=SecretStr(settings.groq_api_key),
+                model="llama-3.1-8b-instant",
                 temperature=0,
                 max_retries=2,
             )
@@ -100,33 +102,28 @@ def extract_intent(user_query:str) -> SearchInput:
                 f"User Query: {user_query}"
             )
 
-            raw_output = SearchInput.model_validate(structured_llm.invoke(prompt))
-            return (
-                raw_output
-                if isinstance(raw_output, SearchInput)
-                else SearchInput.model_validate(raw_output)
-            )
+            res = structured_llm.invoke(prompt)
+            return res if isinstance(res, SearchInput) else SearchInput.model_validate(res)
         except Exception as e:
             print(f"[Warning] Groq intent extraction fallback triggered: {e}")
 
     return SearchInput(semantic_query=user_query)
 
+
 def _gender_variants(gender: str) -> list[str]:
-    """Gender ke saath unisex allow karta hai + DB ki mixed casing handle karta hai."""
     if gender == "female":
         return ["female", "unisex", "FEMALE", "UNISEX", "Female", "Unisex"]
     if gender == "male":
         return ["male", "unisex", "MALE", "UNISEX", "Male", "Unisex"]
     return ["unisex", "UNISEX", "Unisex"]
 
+
 def _case_variants(value: str) -> list[str]:
     return list({value.lower(), value.title(), value.upper()})
 
 
 def build_pre_filter(intent: SearchInput, tier: int = 1) -> dict[str, Any]:
-    """MongoDB Atlas $vectorSearch ke liye valid pre-filter dictionary banata hai."""
-
-    conditions:list[dict[str, Any]] = [
+    conditions: list[dict[str, Any]] = [
         {"is_active": {"$eq": True}},
         {"stock": {"$gt": 0}},
     ]
@@ -143,35 +140,29 @@ def build_pre_filter(intent: SearchInput, tier: int = 1) -> dict[str, Any]:
         if intent.occasion:
             conditions.append({"occasions": {"$in": _case_variants(intent.occasion)}})
 
-    
-    return {"$and": conditions} if len(conditions) > 1 else conditions[0]    
+    return {"$and": conditions} if len(conditions) > 1 else conditions[0]
 
 
-def hybrid_product_search(user_query: str, limit: int = 5) -> dict[str, Any]:
+def hybrid_product_search(intent: SearchInput, limit: int = 5) -> list[dict[str, Any]]:
     """
-    Complete Hybrid Search Pipeline:
-    1. Intent Extraction -> 2. Query Embedding -> 3. Atlas $vectorSearch -> 4. Clean Results
+    Pure Vector Search Engine: Resolved SearchInput leta hai aur MongoDB Atlas se matching products return karta hai.
     """
-
     db = get_db()
     model = get_model()
 
-    intent = extract_intent(user_query)
     query_parts = [intent.semantic_query]
     if intent.style:
         query_parts.append(f"style: {intent.style}")
     if intent.season:
         query_parts.append(f"season: {intent.season}")
     if intent.vibe_keywords:
-        query_parts.append("vibe: " + ", ".join(intent.vibe_keywords))   
+        query_parts.append("vibe: " + ", ".join(intent.vibe_keywords))
 
     query_vector = model.encode(
-        intent.semantic_query, normalize_embeddings= True
+        " | ".join(query_parts), normalize_embeddings=True
     ).tolist()
 
-    pre_filter = build_pre_filter(intent)
-
-    pipeline = [
+    pipeline: list[dict[str, Any]] = [
         {
             "$vectorSearch": {
                 "index": settings.vector_index_name,
@@ -179,55 +170,35 @@ def hybrid_product_search(user_query: str, limit: int = 5) -> dict[str, Any]:
                 "queryVector": query_vector,
                 "numCandidates": int(max(limit * 20, 100)),
                 "limit": int(limit),
-                "filter": pre_filter,
+                "filter": build_pre_filter(intent, tier=1),
             }
         },
-
         {
             "$project": {
                 "_id": 1,
                 "name": 1,
                 "price": 1,
+                "intent": 1,
                 "gift_for": 1,
                 "occasions": 1,
                 "rating": 1,
-                "search_text": 1,
                 "semantic_text": 1,
-                "intent": 1,
+                "search_text": 1,
                 "score": {"$meta": "vectorSearchScore"},
             }
-        }
+        },
     ]
 
     results = list(db["products"].aggregate(pipeline))
 
-    # Fallback: Agar strict gift_for/occasion filter se 0 results aayein, toh sirf price + stock filter par pure semantic search chalao
+    # Tier 2 Fallback: gift_for/occasion hatao, lekin gender + max_price lock rakho
     if not results and (intent.gift_for or intent.occasion):
-        fallback_conditions: list[dict[str, Any]] = [
-            {"is_active": {"$eq": True}},
-            {"stock": {"$gt": 0}},
-        ]
-        if intent.max_price is not None:
-            fallback_conditions.append({"price.selling_price": {"$lte": intent.max_price}})
-
-        pipeline[0]["$vectorSearch"]["filter"] = {"$and": fallback_conditions}
+        pipeline[0]["$vectorSearch"]["filter"] = build_pre_filter(intent, tier=2)
         results = list(db["products"].aggregate(pipeline))
 
-    return {
-        "user_query": user_query,
-        "extracted_intent": intent.model_dump(),
-        "total_found": len(results),
-        "products": results,
-    }
+    # Tier 3 Fallback: Sirf budget + stock
+    if not results and intent.gender:
+        pipeline[0]["$vectorSearch"]["filter"] = build_pre_filter(intent, tier=3)
+        results = list(db["products"].aggregate(pipeline))
 
-if __name__ == "__main__":
-    test_queries = [
-        "behen ke liye bhaidooj pe badhiya gift dikhao 5000 ke andar",
-        "bhai gaming ke liye ek tagda phone suggest kar 30000 tak",
-    ]
-
-    for q in test_queries:
-        print(f"QUERY: {q}")
-        response = hybrid_product_search(q, limit=3)
-        print(response)
-
+    return results
