@@ -5,7 +5,7 @@ from  langgraph.checkpoint.mongodb import MongoDBSaver
 from langgraph.graph import StateGraph, START, END
 from ..db.db import get_db
 from ..config.config import settings
-
+import statistics
 class ChatSearchState(TypedDict):
     user_query: str
     intent: NotRequired[dict[str, Any]]

@@ -26,6 +26,10 @@ class SearchInput(BaseModel):
         default=None,
         description="Maximum budget in INR if mentioned by user, else None",
     )
+    price_trend: Literal["cheaper", "costlier"] | None = Field(
+        default=None,
+        description="'cheaper' if user wants lower price without giving a number (kam, sasta, budget-friendly), 'costlier' for premium/mehenga, else None",
+    )
     gender: Literal["male", "female", "unisex"] | None = Field(
         default=None,
         description="Target gender inferred from query (e.g., wife/sister -> 'female', husband/brother -> 'male'), else None",
@@ -85,6 +89,7 @@ def extract_intent(user_query: str) -> SearchInput:
                 "{\n"
                 '  "semantic_query": string,\n'
                 '  "max_price": number or null,\n'
+                '  "price_trend": "cheaper" | "costlier" or null,\n'
                 '  "gender": "male" | "female" | "unisex" or null,\n'
                 '  "gift_for": string or null,\n'
                 '  "occasion": string or null,\n'
@@ -97,6 +102,9 @@ def extract_intent(user_query: str) -> SearchInput:
                 "- Infer 'gender' strictly when recipient/user gender is clear "
                 "(wife, girlfriend, mother, sister, behen, women -> 'female'; "
                 "husband, boyfriend, father, brother, bhai, men -> 'male'). Otherwise null.\n"
+                "- If user asks for lower price without a number (kam, sasta, cheaper, budget), "
+                "set price_trend to 'cheaper'. For premium/mehenga, set it to 'costlier'. Otherwise null.\n"
+                "- Words like 'bhai', 'yaar', 'bro' used as casual address do NOT imply gender or gift_for.\n"
                 "- Normalize 'gift_for', 'occasion', 'style', 'season' to lowercase single words if present.\n"
                 "- Extract 2-4 lowercase feature/vibe words in 'vibe_keywords' if applicable.\n\n"
                 f"User Query: {user_query}"
