@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..controller.recommendation_controller import handle_product_recommandations
-from ..models.recommendation import RecommendResponse, RecommendedRequest
+from ..models.recommendation import RecommendResponse, RecommendRequest
 
 router = APIRouter()
 
@@ -12,5 +12,5 @@ def health_check() -> dict[str,str]:
 
 
 @router.post("/recommended", response_model= RecommendResponse)
-def ai_recommended_product(payload: RecommendedRequest) -> RecommendResponse:
+def ai_recommended_product(payload: RecommendRequest) -> RecommendResponse:
     return handle_product_recommandations(payload)    

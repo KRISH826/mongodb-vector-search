@@ -12,12 +12,30 @@ def build_semantic_text(
     description = product.get("description", "")
     tags = ", ".join(product.get("tags", []))
 
-    specs = product.get("specs", {})
+    specs = product.get("attributes", {})
     specs_text = (
         ", ".join(f"{k}: {v}" for k, v in specs.items() if v)
         if isinstance(specs, dict)
         else ""
     )
+
+    intent_text = ""
+    intent = product.get("intent")
+    intent_bits = []
+
+    if isinstance(intent, dict):
+        for k in ("gender", "age_group", "style", "season"):
+            if intent.get(k):
+                intent_bits.append(f"{k}: {intent[k]}")
+        # vibes
+        vibes = intent.get("vibe_keywords")
+        if isinstance(vibes, list) and vibes:
+            intent_bits.append("vibe: " + ", ".join(str(v) for v in vibes if v))
+        intent_text = ", ".join(intent_bits)
+
+
+    gift_for = ", ".join(product.get("gift_for", []))
+    occasions = ", ".join(product.get("occasions", []))    
 
     parts = [
         f"Product: {title}." if title else "",
@@ -26,6 +44,9 @@ def build_semantic_text(
         f"Price: {price}." if price else "",
         f"Description: {description}." if description else "",
         f"Specifications: {specs_text}." if specs_text else "",
+        f"Intent: {intent_text}." if intent_text else "",
+        f"Gift for: {gift_for}." if gift_for else "",
+        f"Occasions: {occasions}." if occasions else "",
         f"Tags and Use Cases: {tags}." if tags else "",
     ]
     return " ".join(p for p in parts if p)
@@ -50,17 +71,23 @@ def enrich_exist_product(batch_size: int = 200):
         "title": 1,
         "name": 1,
         "category_id": 1,
+        "category_path": 1,
         "brand_id": 1,
+        "brand_name": 1,
         "price": 1,
         "description": 1,
         "tags": 1,
-        "specs": 1,
+        "attributes": 1,
+        "intent": 1,
+        "gift_for": 1,
+        "occasions": 1,
     }
 
     cursor = db["products"].find({}, projection).batch_size(batch_size)
     ops = []
     total_processed = 0
     total_modified = 0
+
     for p in cursor:
         semantic_text = build_semantic_text(p, category_map, brand_map)
         ops.append(
@@ -70,12 +97,12 @@ def enrich_exist_product(batch_size: int = 200):
             )
         )
 
-    if len(ops) >= batch_size:
-        result = db["products"].bulk_write(ops, ordered= False)
-        total_processed += len(ops)
-        total_modified += result.modified_count
-        ops.clear()  # Memory free karne ke liye zaroori hai
-        print(f"Processed: {total_processed} | Modified: {total_modified}")
+        if len(ops) >= batch_size:
+            result = db["products"].bulk_write(ops, ordered= False)
+            total_processed += len(ops)
+            total_modified += result.modified_count
+            ops.clear()  # Memory free karne ke liye zaroori hai
+            print(f"Processed: {total_processed} | Modified: {total_modified}")
 
 
     if ops:
